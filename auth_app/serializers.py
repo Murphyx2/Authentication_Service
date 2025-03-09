@@ -8,6 +8,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
+
+        # Remove user_id from token
+        if 'user_id' in token:
+            del token['user_id']
+
+        # Custom fields
         token['username'] = user.username
         token['email'] = user.email
         token['groups'] = list(user.groups.values_list('name', flat=True))
