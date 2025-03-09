@@ -20,6 +20,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'auth_app'
 ]
+# Custom user added
+AUTH_USER_MODEL = 'auth_app.CustomUser'
 
 # Database (Using environment variables)
 DATABASES = {
