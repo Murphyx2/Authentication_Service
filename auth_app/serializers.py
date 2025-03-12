@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 from auth_app.models import CustomUser
+from auth_app.validations import validate_username
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -29,10 +29,23 @@ class RegisterSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
+    def validate_username(self, value):
+        # Validate if username is an email
+        validate_username({"username": value})
+
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError(
+                code="password_too_short",
+                detail="Password must be at least 8 characters long."
+            )
+
     def create(self, validated_data):
+        username = validated_data['username']
+
         user = CustomUser.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['username'],
+            username=username,
+            email=username,
             password=validated_data['password'],
         )
         from django.contrib.auth.models import Group
