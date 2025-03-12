@@ -14,8 +14,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             del token['user_id']
 
         # Custom fields
+        # Email serves username
         token['username'] = user.username
-        token['email'] = user.email
         token['groups'] = list(user.groups.values_list('name', flat=True))
         token['unique_id'] = str(user.unique_id)
         return token
@@ -24,7 +24,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password')
+        fields = ('username', 'password')
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -32,7 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
-            email=validated_data['email'],
+            email=validated_data['username'],
             password=validated_data['password'],
         )
         from django.contrib.auth.models import Group
