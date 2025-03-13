@@ -32,6 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_username(self, value):
         # Validate if username is an email
         validate_username({"username": value})
+        return value
 
     def validate_password(self, value):
         if len(value) < 8:
@@ -39,10 +40,10 @@ class RegisterSerializer(serializers.ModelSerializer):
                 code="password_too_short",
                 detail="Password must be at least 8 characters long."
             )
+        return value
 
     def create(self, validated_data):
         username = validated_data['username']
-
         user = CustomUser.objects.create_user(
             username=username,
             email=username,
