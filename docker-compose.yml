@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   auth:
     build: .
@@ -8,20 +6,31 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      - auth-db
     command: >
       sh -c "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 auth_service.wsgi"
+    networks:
+      - auth_net
+      - app-network
 
-  db:
+  auth-db:
     image: postgres:15
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-        - "5432:5432"
+        - "5555:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+        - auth_net
 
 volumes:
     postgres_data:
+
+networks:
+    auth_net:
+        driver: bridge
+    app-network:
+        external: true
