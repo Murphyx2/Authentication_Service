@@ -1,6 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
+from py_eureka_client import eureka_client
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY')
@@ -48,6 +49,13 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+eureka_client.init(
+    eureka_server="http://eureka-server:8761/eureka/",
+    app_name="auth",
+    instance_port=8000,
+    instance_host="auth"
+)
 
 LANGUAGE_CODE = 'en-us'
 
