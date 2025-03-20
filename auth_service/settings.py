@@ -21,6 +21,25 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'auth_app'
 ]
+
+MIDDLEWARE = [
+    'auth_service.middleware.LoggingMiddleware',
+    ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+
 # Custom user added
 AUTH_USER_MODEL = 'auth_app.CustomUser'
 
